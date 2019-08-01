@@ -1,0 +1,158 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head />
+<body>
+
+<link href="/static/css/tree.css" type="text/css" rel="stylesheet">
+
+
+
+
+<button onchange="selectRegion()">加载树形</button>
+
+
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="">省：</label>
+                </div>
+                <div class="col-md-8">
+                    <input  type="hidden" th:value="${provType}">
+                    <select class="form-control" id="provice" name="proviceId" onchange="selectProv()" required="required">
+
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="">市：</label>
+                </div>
+                <div class="col-md-8">
+                    <input type="hidden" th:value="${cityType}">
+
+                    <select class="form-control" id="cityType" name="cityId" onchange="selectCity()" required="required">
+
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="">县：</label>
+                </div>
+                <div class="col-md-8">
+                    <input   type="hidden" th:value="${countryType}">
+
+                    <select class="form-control" id="countryType" name="countryId"  required="required">
+
+                    </select>
+                </div>
+            </div>
+        </div>
+        <!--<div style="display: flex;justify-content: space-between;padding: 0 300px;">-->
+            <!--<button type="submit" class="btn btn-info" style="width: 100px" onclick="submitForm()">确定</button>-->
+            <!--<button type="button" class="btn btn-danger" style="width: 100px"-->
+                    <!--onclick="document.getElementById('light').style.display='none';document.getElementById('fade').style.display='none'">-->
+                <!--取消-->
+            <!--</button>-->
+        <!--</div>-->
+    <!--</div>-->
+<!--</form>-->
+
+<!--<div id="fade" class="black_overlay"></div>-->
+
+<!--</section>-->
+
+<!--<div th:include="fragments/footer"/>-->
+
+<script type="text/javascript">
+    selectRegion()
+
+    function selectRegion() {
+        $.ajax({
+            type: 'post',
+            url: '/tree/selectRegion',
+            dataType: 'json',
+            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+            success: function(jsonResult) {
+                var regionList = jsonResult.data.listRegion;
+                $('#provice').append('<option disabled selected value="">--请选择--</option>')
+
+                regionList.forEach(function(item, index) {
+                    $('#provice').append(`<option value=${item.regionId}>${item.regionName}</option>`)
+                })
+            }
+        })
+    }
+
+    function selectProv() {
+        var proviceId = $('#provice').val();
+        $('#cityType').empty()
+        $('#countryType').empty()
+
+        $.ajax({
+            type: 'post',
+            url: '/tree/selectCity',
+            dataType: 'json',
+            data: { 'proviceId': proviceId },
+            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+            success: function(jsonResult) {
+                var listCity = jsonResult.data.listCity
+                $('#cityType').append('<option  disabled selected value="">--请选择--</option>')
+
+                listCity.forEach(function(item, index) {
+                    $('#cityType').append(`<option value=${item.regionId}>${item.regionName}</option>`)
+                })
+            }
+        })
+    }
+
+    function selectCity() {
+        var countryId = $('#cityType').val()
+        $('#countryType').empty()
+        $.ajax({
+            type: 'post',
+            url: '/tree/selectCountry',
+            dataType: 'json',
+            data: { 'countryId': countryId },
+            contentType: 'application/x-www-form-urlencoded;charset=utf-8',
+            success: function(jsonResult) {
+                var listCountry = jsonResult.data.listCountry
+                $('#countryType').append('<option disabled selected value="">--请选择--</option>')
+                listCountry.forEach(function(item, index) {
+                    $('#countryType').append(`<option value=${item.regionId}>${item.regionName}</option>`)
+                })
+            }
+        })
+    }
+
+</script>
+<style>
+    .pop {
+        margin: 50px;
+        border: 1px solid #000;
+        padding: 20px;
+    }
+
+    .pop label {
+        position: absolute;
+        right: 0;
+        top: 8px
+    }
+
+    .pop input {
+        width: 80%;
+        margin-bottom: 10px;
+    }
+
+    .pop select {
+        width: 80%;
+        margin-bottom: 10px;
+
+    }
+</style>
+<script type="text/javascript" src="/static/js/jquery-2.2.4.min.js"></script>
+<script rel="stylesheet" src="/static/css/bootstrap.css"></script>
+<script src="/static/js/bootstrap.js"></script>
+<script type="text/javascript" src="/static/js/jquery.validate.min.js"></script>
+<script src="https://static.runoob.com/assets/jquery-validation-1.14.0/dist/localization/messages_zh.js"></script>
+</body>
+</html>

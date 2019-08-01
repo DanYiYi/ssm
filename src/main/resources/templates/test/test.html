@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+
+</head>
+<body>
+<input type="button" value="加载xml文件" onclick="cityajax()"><br><br>
+<form action="/test/save" method="post">
+城市列表:
+<select id="list" name="list">
+
+</select>
+<br>
+城市信息：
+<textarea id="texts" name="texts">
+
+        </textarea>
+    <button type="submit">确定</button>
+</form>
+<a href="/tree/treePage/">树形结构还原</a>
+</body>
+<script>
+    function cityajax(){
+        var olist=$('#list');
+        var otext=$('#texts');
+        var arr=new Array();
+        $.ajax({
+            url:"/static/city.xml",
+            type:"get",
+            headers:{'content-type':'text/xml'},
+            dataType:'xml',
+            success:function(xml){
+                $(xml).find("City").each(function(i) {
+                    //获取城市名字
+                    var cityName=$(this).attr("Name");
+                    //添加到下拉框,设置内容
+                    $("<option></option>").appendTo(olist).text(cityName);
+                    //获取城市信息，并存入数组中
+                    var cityText=$(this).find("Description").text();
+                    arr[i]=cityText;
+                    changetext();
+                });
+            },
+            error:function(){ alert("加载失败"); }
+        })
+        //选择不同城市对应信息发生改变
+        function changetext(){
+            var _index=olist.find("option:selected").index();
+            otext.text(arr[_index]);
+        }
+        olist.change(changetext)
+    }
+</script>
+
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</html>
