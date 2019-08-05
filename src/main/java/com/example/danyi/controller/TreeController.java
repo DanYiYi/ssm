@@ -28,7 +28,6 @@ public class TreeController {
     public JsonResult selectSchool(){
 
         List<Region> listRegion=regionService.getRegion();
-
         JsonResult jsonResult=new JsonResult();
         jsonResult.setData("listRegion",listRegion);
         return jsonResult;

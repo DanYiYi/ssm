@@ -30,7 +30,6 @@
         $.ajax({
             url:"/static/city.xml",
             type:"get",
-            headers:{'content-type':'text/xml'},
             dataType:'xml',
             success:function(xml){
                 $(xml).find("City").each(function(i) {
